@@ -101,15 +101,15 @@ body::before{
     border-radius:50%;
     background:radial-gradient(circle at 30% 30%,#fff,#e6d39a);
     box-shadow:0 0 80px rgba(255,230,150,.8);
-    animation:moonDrop 3s ease forwards,moonFloat 4s ease-in-out infinite 3s;
+    animation:moonDrop 3s ease forwards, moonFadeOut 1.5s ease forwards 5s;
     z-index:10;
 }
 @keyframes moonDrop{
     to{top:12%}
 }
-@keyframes moonFloat{
-    0%,100%{transform:translateX(-50%) translateY(0)}
-    50%{transform:translateX(-50%) translateY(-15px)}
+@keyframes moonFadeOut{
+    from{opacity:1}
+    to{opacity:0}
 }
 .moon.dark{
     filter:brightness(.75);
@@ -123,8 +123,8 @@ body::before{
     margin:auto;
     text-align:center;
     z-index:15;
-    opacity:1;
-    animation:containerGlow 4s ease-in-out infinite 0s;
+    opacity:0;
+    animation:fadeIn 2s ease forwards 3s;
     max-width:900px;
     width:85%;
     max-height:85vh;
@@ -145,9 +145,9 @@ body::before{
     50%{box-shadow:0 0 120px rgba(138,43,226,.5),0 0 60px rgba(255,20,147,.4),inset 0 0 70px rgba(255,200,150,.15)}
 }
 
-@keyframes fadeInScale{
-    from{opacity:0;transform:scale(.85)}
-    to{opacity:1;transform:scale(1)}
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
 }
 
 .message-container h1{
@@ -220,8 +220,8 @@ body::before{
 }
 
 @keyframes lineSlideIn{
-    from{opacity:0;transform:translateX(-30px)}
-    to{opacity:1;transform:translateX(0)}
+    from{opacity:0}
+    to{opacity:1}
 }
 
 .broken-heart{
@@ -625,7 +625,6 @@ body::before{
     
     <div class="our-story">
         <div class="story-divider"></div>
-        <h2>Our Story</h2>
         <p>
             The day I saw you in that pink dress... that was the first time I truly felt what love actually is. 
             Your smile, the way you looked at me — everything changed in that moment. 
@@ -692,7 +691,7 @@ for(let i=0;i<3;i++){
 
 /* Add delay to each cheesy line */
 document.querySelectorAll('.cheesy-line').forEach((el, i) => {
-    el.style.animationDelay = (4 + i * 1) + 's';
+    el.style.animationDelay = (5 + i * 1) + 's';
 });
 
 /* Enhanced particle effects - Trailing light */
