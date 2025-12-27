@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I'm Sorry — One Misunderstanding</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    width:100%;
+    height:100vh;
+    background:#000;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-family:'Georgia',serif;
+    position:relative;
+    cursor:pointer;
+}
+
+/* ================= BACKGROUND ================= */
+
+body::before{
+    content:'';
+    position:fixed;
+    inset:-50%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(90,0,120,.35), transparent 55%),
+      radial-gradient(circle at 80% 40%, rgba(0,60,120,.35), transparent 55%),
+      linear-gradient(135deg,#050010,#12001f,#050010);
+    animation:bgMove 20s ease-in-out infinite;
+    z-index:0;
+}
+@keyframes bgMove{
+    0%,100%{transform:translate(0,0)}
+    50%{transform:translate(30px,-20px)}
+}
+
+/* Vignette */
+.vignette{
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle,transparent 40%,rgba(0,0,0,.85) 85%);
+    pointer-events:none;
+    z-index:50;
+}
+
+/* Grain */
+.grain{
+    position:fixed;
+    inset:0;
+    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+    opacity:.08;
+    mix-blend-mode:overlay;
+    pointer-events:none;
+    z-index:49;
+}
+
+/* Fog */
+.fog{
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:radial-gradient(ellipse at center,rgba(255,255,255,.04),transparent 70%);
+    animation:fogMove 30s linear infinite;
+    z-index:2;
+}
+@keyframes fogMove{
+    from{transform:translate(-20%,-10%)}
+    to{transform:translate(0%,10%)}
+}
+
+/* ================= STARS ================= */
+
+.stars{position:absolute;inset:0;z-index:1}
+.star{
+    position:absolute;
+    width:1px;height:1px;
+    background:#fff;
+    border-radius:50%;
+    opacity:.6;
+    animation:twinkle 4s infinite;
+}
+@keyframes twinkle{
+    0%,100%{opacity:.3}
+    50%{opacity:.8}
+}
+
+/* ================= MOON ================= */
+
+.moon{
+    position:absolute;
+    top:-200px;
+    left:50%;
+    transform:translateX(-50%);
+    width:180px;height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#fff,#e6d39a);
+    box-shadow:0 0 80px rgba(255,230,150,.8);
+    animation:moonDrop 3s ease forwards,moonFloat 4s ease-in-out infinite 3s;
+    z-index:10;
+}
+@keyframes moonDrop{
+    to{top:12%}
+}
+@keyframes moonFloat{
+    0%,100%{transform:translateX(-50%) translateY(0)}
+    50%{transform:translateX(-50%) translateY(-15px)}
+}
+.moon.dark{
+    filter:brightness(.75);
+    box-shadow:0 0 50px rgba(150,150,150,.4);
+}
+
+/* ================= MESSAGE ================= */
+
+.message-container{
+    position:relative;
+    margin:auto;
+    text-align:center;
+    z-index:15;
+    opacity:1;
+    animation:containerGlow 4s ease-in-out infinite 0s;
+    max-width:900px;
+    width:85%;
+    max-height:85vh;
+    overflow-y:auto;
+    padding:60px 50px;
+    background:rgba(5,0,16,.4);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:25px;
+    box-shadow:
+      0 0 80px rgba(138,43,226,.3),
+      0 0 40px rgba(255,20,147,.2),
+      inset 0 0 50px rgba(255,200,150,.08);
+}
+
+@keyframes containerGlow{
+    0%,100%{box-shadow:0 0 80px rgba(138,43,226,.3),0 0 40px rgba(255,20,147,.2),inset 0 0 50px rgba(255,200,150,.08)}
+    50%{box-shadow:0 0 120px rgba(138,43,226,.5),0 0 60px rgba(255,20,147,.4),inset 0 0 70px rgba(255,200,150,.15)}
+}
+
+@keyframes fadeInScale{
+    from{opacity:0;transform:scale(.85)}
+    to{opacity:1;transform:scale(1)}
+}
+
+.message-container h1{
+    font-size:3.5em;
+    color:#fff;
+    letter-spacing:4px;
+    margin-top:0;
+    margin-bottom:20px;
+    text-shadow:
+      0 0 30px rgba(255,200,150,.8),
+      0 0 70px rgba(138,43,226,.6),
+      0 0 100px rgba(255,20,147,.3);
+    font-weight:300;
+    animation:titleGlow 3s ease-in-out infinite 2s;
+}
+
+@keyframes titleGlow{
+    0%,100%{text-shadow:0 0 30px rgba(255,200,150,.8),0 0 70px rgba(138,43,226,.6),0 0 100px rgba(255,20,147,.3)}
+    50%{text-shadow:0 0 40px rgba(255,200,150,1),0 0 90px rgba(138,43,226,.8),0 0 120px rgba(255,20,147,.5)}
+}
+
+.message-container p{
+    font-size:1.85em;
+    color:#e5d9ff;
+    margin-bottom:15px;
+    font-weight:300;
+    letter-spacing:2px;
+}
+
+.subtitle{
+    font-size:1.5em;
+    color:#ffb3d9;
+    margin-bottom:40px;
+    font-weight:300;
+    letter-spacing:2px;
+    animation:subtitlePulse 2.5s ease-in-out infinite 2.5s;
+}
+
+@keyframes subtitlePulse{
+    0%,100%{opacity:.8;transform:scale(1)}
+    50%{opacity:1;transform:scale(1.02)}
+}
+
+.cheesy-line{
+    font-size:1.3em;
+    color:#ffb3d9;
+    opacity:0;
+    animation:lineSlideIn 1.8s ease forwards;
+    margin:15px 0;
+    font-weight:300;
+    letter-spacing:1.5px;
+    line-height:1.8;
+    position:relative;
+}
+
+.cheesy-line::before{
+    content:'';
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:-8px;
+    width:0;
+    height:2px;
+    background:linear-gradient(90deg,transparent,rgba(255,180,217,.6),transparent);
+    animation:expandLine 1.8s ease forwards;
+}
+
+@keyframes expandLine{
+    to{width:80%}
+}
+
+@keyframes lineSlideIn{
+    from{opacity:0;transform:translateX(-30px)}
+    to{opacity:1;transform:translateX(0)}
+}
+
+.broken-heart{
+    animation:heartBeatIntense 1.5s infinite;
+    display:inline-block;
+    color:#ff4d6d;
+    filter:drop-shadow(0 0 8px rgba(255,77,109,.8));
+}
+@keyframes heartBeatIntense{
+    0%,100%{transform:scale(1);opacity:.7}
+    25%{transform:scale(1.15);opacity:1}
+    50%{transform:scale(1.3);opacity:1}
+    75%{transform:scale(1.15);opacity:1}
+}
+
+/* ================= IMAGE ================= */
+
+.image-gallery{
+    position:absolute;
+    top:55%;
+    transform:translateY(-50%);
+    z-index:12;
+    opacity:0;
+    animation:fadeIn 2s ease forwards 4.5s;
+}
+.image-frame{
+    width:300px;height:300px;
+    border-radius:50%;
+    overflow:hidden;
+    box-shadow:0 0 60px rgba(255,20,147,.6);
+}
+.image-frame img{
+    width:100%;height:100%;
+    object-fit:cover;
+}
+.username-display{
+    margin-top:15px;
+    color:#ffb3d9;
+    letter-spacing:2px;
+}
+
+/* ================= CLICK EFFECT ================= */
+
+.floating-heart{
+    position:absolute;
+    color:#ff4d6d;
+    font-size:24px;
+    animation:floatUp 4s ease forwards;
+}
+@keyframes floatUp{
+    to{transform:translateY(-100vh);opacity:0}
+}
+
+.click-hint{
+    position:absolute;
+    bottom:20px;
+    color:rgba(255,255,255,.4);
+    animation:pulse 2s infinite;
+    display:none;
+}
+@keyframes pulse{
+    0%,100%{opacity:.3}
+    50%{opacity:.8}
+}
+
+/* ================= FLOATING ORBS ================= */
+
+.floating-orb{
+    position:fixed;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:3;
+    filter:blur(1.5px);
+}
+
+.orb-1{
+    width:100px;
+    height:100px;
+    background:radial-gradient(circle at 30% 30%, rgba(255,180,217,.4), rgba(138,43,226,.1));
+    box-shadow:0 0 40px rgba(255,180,217,.6), inset 0 0 40px rgba(255,180,217,.3);
+    animation:orbitOne 15s linear infinite;
+}
+
+.orb-2{
+    width:80px;
+    height:80px;
+    background:radial-gradient(circle at 40% 40%, rgba(138,43,226,.35), rgba(255,20,147,.08));
+    box-shadow:0 0 35px rgba(138,43,226,.5), inset 0 0 35px rgba(138,43,226,.2);
+    animation:orbitTwo 20s linear infinite;
+}
+
+.orb-3{
+    width:120px;
+    height:120px;
+    background:radial-gradient(circle at 25% 35%, rgba(100,200,255,.25), rgba(138,43,226,.05));
+    box-shadow:0 0 50px rgba(100,200,255,.4), inset 0 0 50px rgba(100,200,255,.15);
+    animation:orbitThree 25s linear infinite;
+}
+
+@keyframes orbitOne{
+    from{transform:translate(0, 0)}
+    50%{transform:translate(200px, -150px)}
+    100%{transform:translate(0, 0)}
+}
+
+@keyframes orbitTwo{
+    from{transform:translate(0, 0)}
+    50%{transform:translate(-180px, 160px)}
+    100%{transform:translate(0, 0)}
+}
+
+@keyframes orbitThree{
+    from{transform:translate(0, 0)}
+    50%{transform:translate(250px, 100px)}
+    100%{transform:translate(0, 0)}
+}
+
+/* ================= FINAL APOLOGY ================= */
+
+.final-apology{
+    font-size:1.8em;
+    color:#ff4d6d;
+    margin-top:40px;
+    padding-top:30px;
+    border-top:2px solid rgba(255,180,217,.4);
+    font-weight:bold;
+    letter-spacing:2px;
+    opacity:0;
+    animation:finalApologyFade 2s ease forwards 10s;
+    text-shadow:0 0 20px rgba(255,77,109,.6);
+}
+
+@keyframes finalApologyFade{
+    from{opacity:0;transform:scale(.9)}
+    to{opacity:1;transform:scale(1)}
+}
+
+/* ================= OUR STORY ================= */
+
+.our-story{
+    margin-top:45px;
+    padding-top:35px;
+    opacity:0;
+    animation:storyFadeIn 2.5s ease forwards 12s;
+}
+
+.story-divider{
+    width:60px;
+    height:2px;
+    background:linear-gradient(90deg, transparent, rgba(255,180,217,.8), transparent);
+    margin:0 auto 25px;
+    animation:expandDivider 1.5s ease forwards;
+}
+
+@keyframes expandDivider{
+    from{width:0}
+    to{width:60px}
+}
+
+.our-story h2{
+    font-size:1.9em;
+    color:#ffb3d9;
+    margin-bottom:25px;
+    letter-spacing:3px;
+    font-weight:300;
+    text-shadow:0 0 15px rgba(255,180,217,.5);
+}
+
+.our-story p{
+    font-size:1.2em;
+    color:#e5d9ff;
+    margin-bottom:20px;
+    line-height:1.8;
+    letter-spacing:0.5px;
+    font-weight:300;
+}
+
+@keyframes storyFadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+    .moon{
+        width:120px;
+        height:120px;
+        top:-150px;
+    }
+    
+    .message-container{
+        max-width:95vw;
+        width:80%;
+        padding:35px 25px;
+    }
+    
+    .message-container h1{
+        font-size:2.2em;
+        letter-spacing:2px;
+        margin-bottom:15px;
+    }
+    
+    .message-container p{
+        font-size:1.3em;
+        letter-spacing:1px;
+        margin-bottom:10px;
+    }
+    
+    .subtitle{
+        font-size:1.1em;
+        margin-bottom:25px;
+        letter-spacing:1px;
+    }
+    
+    .cheesy-line{
+        font-size:1.05em;
+        margin:12px 0;
+        letter-spacing:0.5px;
+        line-height:1.6;
+    }
+    
+    .final-apology{
+        font-size:1.4em;
+        margin-top:25px;
+        padding-top:20px;
+        letter-spacing:1px;
+    }
+    
+    .our-story{
+        margin-top:30px;
+        padding-top:25px;
+    }
+    
+    .our-story h2{
+        font-size:1.4em;
+        margin-bottom:18px;
+        letter-spacing:2px;
+    }
+    
+    .our-story p{
+        font-size:1em;
+        margin-bottom:15px;
+        line-height:1.6;
+    }
+    
+    .orb-1{
+        width:60px;
+        height:60px;
+    }
+    
+    .orb-2{
+        width:50px;
+        height:50px;
+    }
+    
+    .orb-3{
+        width:70px;
+        height:70px;
+    }
+    
+    @keyframes orbitOne{
+        from{transform:translate(0, 0)}
+        50%{transform:translate(100px, -80px)}
+        100%{transform:translate(0, 0)}
+    }
+    
+    @keyframes orbitTwo{
+        from{transform:translate(0, 0)}
+        50%{transform:translate(-90px, 80px)}
+        100%{transform:translate(0, 0)}
+    }
+    
+    @keyframes orbitThree{
+        from{transform:translate(0, 0)}
+        50%{transform:translate(120px, 50px)}
+        100%{transform:translate(0, 0)}
+    }
+}
+
+@media (max-width: 480px) {
+    .moon{
+        width:100px;
+        height:100px;
+        top:-120px;
+    }
+    
+    .message-container{
+        max-width:98vw;
+        width:90%;
+        padding:25px 18px;
+    }
+    
+    .message-container h1{
+        font-size:1.8em;
+        letter-spacing:1.5px;
+        margin-bottom:12px;
+    }
+    
+    .message-container p{
+        font-size:1.1em;
+        letter-spacing:0.5px;
+    }
+    
+    .subtitle{
+        font-size:0.95em;
+        margin-bottom:20px;
+    }
+    
+    .cheesy-line{
+        font-size:0.95em;
+        margin:10px 0;
+        letter-spacing:0px;
+        line-height:1.5;
+    }
+    
+    .final-apology{
+        font-size:1.2em;
+        margin-top:20px;
+        padding-top:15px;
+    }
+    
+    .our-story{
+        margin-top:20px;
+        padding-top:15px;
+    }
+    
+    .our-story h2{
+        font-size:1.2em;
+        margin-bottom:15px;
+        letter-spacing:1.5px;
+    }
+    
+    .our-story p{
+        font-size:0.95em;
+        margin-bottom:12px;
+        line-height:1.5;
+    }
+    
+    .orb-1{
+        width:40px;
+        height:40px;
+    }
+    
+    .orb-2{
+        width:35px;
+        height:35px;
+    }
+    
+    .orb-3{
+        width:50px;
+        height:50px;
+    }
+    
+    @keyframes orbitOne{
+        from{transform:translate(0, 0)}
+        50%{transform:translate(60px, -50px)}
+        100%{transform:translate(0, 0)}
+    }
+    
+    @keyframes orbitTwo{
+        from{transform:translate(0, 0)}
+        50%{transform:translate(-50px, 50px)}
+        100%{transform:translate(0, 0)}
+    }
+    
+    @keyframes orbitThree{
+        from{transform:translate(0, 0)}
+        50%{transform:translate(70px, 30px)}
+        100%{transform:translate(0, 0)}
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="moon" id="moon"></div>
+
+<div class="image-gallery">
+    <div class="image-frame">
+        <img src="WhatsApp Image 2025-12-27 at 9.39.49 PM.jpeg">
+    </div>
+    <div class="username-display">c_hi_k_u_18</div>
+</div>
+
+<div class="message-container">
+    <h1>Bhumii, I'm So Sorry</h1>
+    <p><span class="broken-heart">♥</span> I never meant to hurt you <span class="broken-heart">♥</span></p>
+    <div class="subtitle">It was just one misunderstanding — and I'll regret it forever</div>
+
+    <div class="cheesy-line">Every day I think about you, Bhumii</div>
+    <div class="cheesy-line">About how I let you slip away</div>
+    <div class="cheesy-line">My silence was the biggest mistake</div>
+    <div class="cheesy-line">I never stopped loving you — not for a second</div>
+    <div class="cheesy-line">I don't expect everything to go back to normal</div>
+    <div class="cheesy-line"><b>But please, just give me a chance to make things right</b></div>
+    
+    <div class="final-apology">Bhumii, I'm really sorry</div>
+    
+    <div class="our-story">
+        <div class="story-divider"></div>
+        <h2>Our Story</h2>
+        <p>
+            The day I saw you in that pink dress... that was the first time I truly felt what love actually is. 
+            Your smile, the way you looked at me — everything changed in that moment. 
+            I didn't know it then, but you became my entire world.
+        </p>
+        <p>
+            And when I saw you in that red saree in the competition... I felt like I'm the luckiest person alive. 
+            There were so many people around — Aanchal and many others — but my eyes couldn't see them. 
+            Your beauty, your hair, your eyes... everything about you captivated me completely. 
+            I was completely lost in you, intoxicated by your presence, your grace, your essence. 
+            The way you carried yourself, the glow in your eyes, the elegance in every movement — 
+            only you existed in that moment. Time stopped. It felt like I was in heaven. 
+            You were so stunning, so confident, so radiant. 
+            That moment, I knew for certain — you were the one I wanted to spend my entire life with.
+        </p>
+        <p>
+            When I lost you, the pain was unbearable. That's when I finally understood your true importance in my life. 
+            You weren't just someone I cared about — you were everything I needed. 
+            Every moment without you feels like an eternity of regret.
+        </p>
+        <p style="margin-top:20px; font-style:italic; opacity:0.9;">
+            I promise to never take you for granted again, Bhumii. 💜
+        </p>
+    </div>
+</div>
+
+<div class="click-hint">Click anywhere…</div>
+
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<script>
+/* Stars with varied animation */
+const stars=document.getElementById('stars');
+for(let i=0;i<80;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=Math.random()*4+'s';
+    stars.appendChild(s);
+}
+
+/* Create floating orbs */
+function createOrbs(){
+    const orbTypes = ['orb-1', 'orb-2', 'orb-3'];
+    orbTypes.forEach(type => {
+        const orb = document.createElement('div');
+        orb.className = `floating-orb ${type}`;
+        orb.style.left = window.innerWidth/2 + 'px';
+        orb.style.top = window.innerHeight/2 + 'px';
+        document.body.appendChild(orb);
+    });
+}
+createOrbs();
+
+/* Fog */
+for(let i=0;i<3;i++){
+    const f=document.createElement('div');
+    f.className='fog';
+    f.style.opacity=.04+Math.random()*.04;
+    document.body.appendChild(f);
+}
+
+/* Add delay to each cheesy line */
+document.querySelectorAll('.cheesy-line').forEach((el, i) => {
+    el.style.animationDelay = (4 + i * 1) + 's';
+});
+
+/* Enhanced particle effects - Trailing light */
+function createLightTrails(){
+    for(let i=0;i<8;i++){
+        const trail = document.createElement('div');
+        trail.style.position='fixed';
+        trail.style.width='2px';
+        trail.style.height='15px';
+        trail.style.background=`linear-gradient(180deg, rgba(255,180,217,1), rgba(138,43,226,0))`;
+        trail.style.zIndex='8';
+        trail.style.pointerEvents='none';
+        trail.style.opacity='0.6';
+        
+        const angle = (i/8) * Math.PI * 2;
+        const radius = 150 + Math.random()*100;
+        const x = window.innerWidth/2 + Math.cos(angle) * radius;
+        const y = window.innerHeight/2 + Math.sin(angle) * radius;
+        
+        trail.style.left=x+'px';
+        trail.style.top=y+'px';
+        trail.style.transform=`rotate(${(angle*180/Math.PI)}deg)`;
+        
+        document.body.appendChild(trail);
+        
+        setTimeout(() => trail.remove(), 2000);
+    }
+}
+
+/* Particle effects on load */
+function createParticles(){
+    const container = document.querySelector('.message-container');
+    for(let i=0;i<6;i++){
+        const particle = document.createElement('div');
+        particle.style.position='fixed';
+        particle.style.width='4px';
+        particle.style.height='4px';
+        particle.style.background='radial-gradient(circle, rgba(255,180,217,1), rgba(138,43,226,.6))';
+        particle.style.borderRadius='50%';
+        particle.style.zIndex='12';
+        particle.style.pointerEvents='none';
+        particle.style.boxShadow='0 0 10px rgba(255,180,217,.8)';
+        
+        const startX = window.innerWidth/2 + (Math.random()-0.5)*250;
+        const startY = window.innerHeight/2 + (Math.random()-0.5)*250;
+        const endX = window.innerWidth/2 + (Math.random()-0.5)*500;
+        const endY = window.innerHeight/2 + (Math.random()-0.5)*500;
+        
+        particle.style.left=startX+'px';
+        particle.style.top=startY+'px';
+        
+        document.body.appendChild(particle);
+        
+        let pos = 0;
+        const animation = setInterval(() => {
+            pos += 0.04;
+            particle.style.left=(startX + (endX-startX)*pos)+'px';
+            particle.style.top=(startY + (endY-startY)*pos)+'px';
+            particle.style.opacity=1-pos;
+            
+            if(pos>=1){
+                clearInterval(animation);
+                particle.remove();
+            }
+        }, 25);
+    }
+}
+
+/* Trigger particles at key moments */
+setTimeout(createParticles, 3000);
+setTimeout(createParticles, 7000);
+setTimeout(createParticles, 11000);
+
+/* Trigger light trails */
+setTimeout(createLightTrails, 4000);
+
+/* Enhanced click hearts with particles and waves */
+document.addEventListener('click',e=>{
+    /* Hearts */
+    for(let i=0;i<10;i++){
+        const h=document.createElement('div');
+        h.className='floating-heart';
+        h.textContent='♥';
+        h.style.left=e.clientX+'px';
+        h.style.top=e.clientY+'px';
+        h.style.filter='drop-shadow(0 0 12px rgba(255,77,109,.9))';
+        h.style.fontSize=(20+Math.random()*15)+'px';
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),4500);
+    }
+    
+    /* Create sparkle particles with varied colors */
+    for(let i=0;i<10;i++){
+        const spark = document.createElement('div');
+        spark.style.position='fixed';
+        spark.style.width=Math.random()*5+2+'px';
+        spark.style.height=spark.style.width;
+        const colors = ['rgba(255,180,217,1)', 'rgba(138,43,226,1)', 'rgba(255,200,150,1)'];
+        spark.style.background=colors[Math.floor(Math.random()*colors.length)];
+        spark.style.borderRadius='50%';
+        spark.style.zIndex='12';
+        spark.style.pointerEvents='none';
+        spark.style.left=e.clientX+'px';
+        spark.style.top=e.clientY+'px';
+        spark.style.boxShadow=`0 0 8px ${spark.style.background}`;
+        document.body.appendChild(spark);
+        
+        const angle = (i/10)*Math.PI*2;
+        const speed = 3+Math.random()*2;
+        let vx = Math.cos(angle)*speed;
+        let vy = Math.sin(angle)*speed;
+        let life = 60;
+        
+        const sparkAnimation = setInterval(() => {
+            life--;
+            vx*=0.96;
+            vy*=0.96;
+            const x = parseFloat(spark.style.left);
+            const y = parseFloat(spark.style.top);
+            spark.style.left=(x+vx)+'px';
+            spark.style.top=(y+vy)+'px';
+            spark.style.opacity=life/60;
+            
+            if(life<=0){
+                clearInterval(sparkAnimation);
+                spark.remove();
+            }
+        }, 20);
+    }
+    
+    /* Create pulse ripple effect */
+    const ripple = document.createElement('div');
+    ripple.style.position='fixed';
+    ripple.style.left=e.clientX+'px';
+    ripple.style.top=e.clientY+'px';
+    ripple.style.width='0px';
+    ripple.style.height='0px';
+    ripple.style.borderRadius='50%';
+    ripple.style.border='2px solid rgba(255,180,217,.8)';
+    ripple.style.zIndex='11';
+    ripple.style.pointerEvents='none';
+    ripple.style.transform='translate(-50%, -50%)';
+    document.body.appendChild(ripple);
+    
+    let rippleSize = 0;
+    const rippleAnim = setInterval(() => {
+        rippleSize += 15;
+        ripple.style.width=rippleSize+'px';
+        ripple.style.height=rippleSize+'px';
+        ripple.style.opacity=1-(rippleSize/300);
+        if(rippleSize>=300){
+            clearInterval(rippleAnim);
+            ripple.remove();
+        }
+    }, 20);
+});
+
+/* Dark moon after emotion peak */
+setTimeout(()=>document.getElementById('moon').classList.add('dark'),9000);
+
+/* Background pulse on key moments */
+setTimeout(() => {
+    document.body.style.animation = 'none';
+    setTimeout(() => {
+        document.body.style.animation = 'bgPulse 1.5s ease';
+    }, 10);
+}, 2500);
+
+/* Add pulse animation to body */
+const style = document.createElement('style');
+style.textContent = `
+@keyframes bgPulse{
+    0%{filter:brightness(1)}
+    50%{filter:brightness(1.15)}
+    100%{filter:brightness(1)}
+}
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
