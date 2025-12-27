@@ -242,7 +242,8 @@ body::before{
 .image-gallery{
     position:absolute;
     top:55%;
-    transform:translateY(-50%);
+    left:50%;
+    transform:translate(-50%, -50%);
     z-index:12;
     opacity:0;
     animation:fadeIn 2s ease forwards 4.5s;
@@ -294,14 +295,12 @@ body::before{
     border-radius:50%;
     pointer-events:none;
     z-index:3;
-    filter:blur(1.5px);
 }
 
 .orb-1{
     width:100px;
     height:100px;
     background:radial-gradient(circle at 30% 30%, rgba(255,180,217,.4), rgba(138,43,226,.1));
-    box-shadow:0 0 40px rgba(255,180,217,.6), inset 0 0 40px rgba(255,180,217,.3);
     animation:orbitOne 15s linear infinite;
 }
 
@@ -309,7 +308,6 @@ body::before{
     width:80px;
     height:80px;
     background:radial-gradient(circle at 40% 40%, rgba(138,43,226,.35), rgba(255,20,147,.08));
-    box-shadow:0 0 35px rgba(138,43,226,.5), inset 0 0 35px rgba(138,43,226,.2);
     animation:orbitTwo 20s linear infinite;
 }
 
@@ -317,7 +315,6 @@ body::before{
     width:120px;
     height:120px;
     background:radial-gradient(circle at 25% 35%, rgba(100,200,255,.25), rgba(138,43,226,.05));
-    box-shadow:0 0 50px rgba(100,200,255,.4), inset 0 0 50px rgba(100,200,255,.15);
     animation:orbitThree 25s linear infinite;
 }
 
@@ -357,6 +354,13 @@ body::before{
 @keyframes finalApologyFade{
     from{opacity:0;transform:scale(.9)}
     to{opacity:1;transform:scale(1)}
+}
+
+@keyframes sparkle-move {
+    to {
+        transform: translate(var(--vx), var(--vy));
+        opacity: 0;
+    }
 }
 
 /* ================= OUR STORY ================= */
@@ -653,13 +657,10 @@ body::before{
 
 <div class="click-hint">Click anywhere…</div>
 
-<div class="vignette"></div>
-<div class="grain"></div>
-
 <script>
 /* Stars with varied animation */
 const stars=document.getElementById('stars');
-for(let i=0;i<80;i++){
+for(let i=0;i<50;i++){
     const s=document.createElement('div');
     s.className='star';
     s.style.left=Math.random()*100+'%';
@@ -681,97 +682,15 @@ function createOrbs(){
 }
 createOrbs();
 
-/* Fog */
-for(let i=0;i<3;i++){
-    const f=document.createElement('div');
-    f.className='fog';
-    f.style.opacity=.04+Math.random()*.04;
-    document.body.appendChild(f);
-}
-
 /* Add delay to each cheesy line */
 document.querySelectorAll('.cheesy-line').forEach((el, i) => {
     el.style.animationDelay = (5 + i * 1) + 's';
 });
 
-/* Enhanced particle effects - Trailing light */
-function createLightTrails(){
-    for(let i=0;i<8;i++){
-        const trail = document.createElement('div');
-        trail.style.position='fixed';
-        trail.style.width='2px';
-        trail.style.height='15px';
-        trail.style.background=`linear-gradient(180deg, rgba(255,180,217,1), rgba(138,43,226,0))`;
-        trail.style.zIndex='8';
-        trail.style.pointerEvents='none';
-        trail.style.opacity='0.6';
-        
-        const angle = (i/8) * Math.PI * 2;
-        const radius = 150 + Math.random()*100;
-        const x = window.innerWidth/2 + Math.cos(angle) * radius;
-        const y = window.innerHeight/2 + Math.sin(angle) * radius;
-        
-        trail.style.left=x+'px';
-        trail.style.top=y+'px';
-        trail.style.transform=`rotate(${(angle*180/Math.PI)}deg)`;
-        
-        document.body.appendChild(trail);
-        
-        setTimeout(() => trail.remove(), 2000);
-    }
-}
-
-/* Particle effects on load */
-function createParticles(){
-    const container = document.querySelector('.message-container');
-    for(let i=0;i<6;i++){
-        const particle = document.createElement('div');
-        particle.style.position='fixed';
-        particle.style.width='4px';
-        particle.style.height='4px';
-        particle.style.background='radial-gradient(circle, rgba(255,180,217,1), rgba(138,43,226,.6))';
-        particle.style.borderRadius='50%';
-        particle.style.zIndex='12';
-        particle.style.pointerEvents='none';
-        particle.style.boxShadow='0 0 10px rgba(255,180,217,.8)';
-        
-        const startX = window.innerWidth/2 + (Math.random()-0.5)*250;
-        const startY = window.innerHeight/2 + (Math.random()-0.5)*250;
-        const endX = window.innerWidth/2 + (Math.random()-0.5)*500;
-        const endY = window.innerHeight/2 + (Math.random()-0.5)*500;
-        
-        particle.style.left=startX+'px';
-        particle.style.top=startY+'px';
-        
-        document.body.appendChild(particle);
-        
-        let pos = 0;
-        const animation = setInterval(() => {
-            pos += 0.04;
-            particle.style.left=(startX + (endX-startX)*pos)+'px';
-            particle.style.top=(startY + (endY-startY)*pos)+'px';
-            particle.style.opacity=1-pos;
-            
-            if(pos>=1){
-                clearInterval(animation);
-                particle.remove();
-            }
-        }, 25);
-    }
-}
-
-/* Trigger particles at key moments */
-setTimeout(createParticles, 3000);
-setTimeout(createParticles, 7000);
-setTimeout(createParticles, 11000);
-
-/* Trigger light trails */
-setTimeout(createLightTrails, 4000);
-
 /* Enhanced click hearts with particles and waves */
 document.addEventListener('click',e=>{
     /* Hearts */
-    for(let i=0;i<10;i++){
+    for(let i=0;i<3;i++){
         const h=document.createElement('div');
         h.className='floating-heart';
         h.textContent='♥';
@@ -784,7 +703,7 @@ document.addEventListener('click',e=>{
     }
     
     /* Create sparkle particles with varied colors */
-    for(let i=0;i<10;i++){
+    for(let i=0;i<5;i++){
         const spark = document.createElement('div');
         spark.style.position='fixed';
         spark.style.width=Math.random()*5+2+'px';
@@ -797,80 +716,26 @@ document.addEventListener('click',e=>{
         spark.style.left=e.clientX+'px';
         spark.style.top=e.clientY+'px';
         spark.style.boxShadow=`0 0 8px ${spark.style.background}`;
-        document.body.appendChild(spark);
         
-        const angle = (i/10)*Math.PI*2;
-        const speed = 3+Math.random()*2;
+        const angle = (i/5)*Math.PI*2;
+        const speed = 50 + Math.random() * 50;
         let vx = Math.cos(angle)*speed;
         let vy = Math.sin(angle)*speed;
-        let life = 60;
         
-        const sparkAnimation = setInterval(() => {
-            life--;
-            vx*=0.96;
-            vy*=0.96;
-            const x = parseFloat(spark.style.left);
-            const y = parseFloat(spark.style.top);
-            spark.style.left=(x+vx)+'px';
-            spark.style.top=(y+vy)+'px';
-            spark.style.opacity=life/60;
-            
-            if(life<=0){
-                clearInterval(sparkAnimation);
-                spark.remove();
-            }
-        }, 20);
+        spark.style.setProperty('--vx', vx + 'px');
+        spark.style.setProperty('--vy', vy + 'px');
+        spark.style.animation = `sparkle-move 1s ease-out forwards`;
+        
+        document.body.appendChild(spark);
+        
+        setTimeout(() => spark.remove(), 1000);
     }
-    
-    /* Create pulse ripple effect */
-    const ripple = document.createElement('div');
-    ripple.style.position='fixed';
-    ripple.style.left=e.clientX+'px';
-    ripple.style.top=e.clientY+'px';
-    ripple.style.width='0px';
-    ripple.style.height='0px';
-    ripple.style.borderRadius='50%';
-    ripple.style.border='2px solid rgba(255,180,217,.8)';
-    ripple.style.zIndex='11';
-    ripple.style.pointerEvents='none';
-    ripple.style.transform='translate(-50%, -50%)';
-    document.body.appendChild(ripple);
-    
-    let rippleSize = 0;
-    const rippleAnim = setInterval(() => {
-        rippleSize += 15;
-        ripple.style.width=rippleSize+'px';
-        ripple.style.height=rippleSize+'px';
-        ripple.style.opacity=1-(rippleSize/300);
-        if(rippleSize>=300){
-            clearInterval(rippleAnim);
-            ripple.remove();
-        }
-    }, 20);
 });
 
-/* Dark moon after emotion peak */
-setTimeout(()=>document.getElementById('moon').classList.add('dark'),9000);
+/* Click hint logic */
+const clickHint = document.querySelector('.click-hint');
+document.querySelector('.click-hint').style.animation = 'pulse 2s infinite';
 
-/* Background pulse on key moments */
-setTimeout(() => {
-    document.body.style.animation = 'none';
-    setTimeout(() => {
-        document.body.style.animation = 'bgPulse 1.5s ease';
-    }, 10);
-}, 2500);
-
-/* Add pulse animation to body */
-const style = document.createElement('style');
-style.textContent = `
-@keyframes bgPulse{
-    0%{filter:brightness(1)}
-    50%{filter:brightness(1.15)}
-    100%{filter:brightness(1)}
-}
-`;
-document.head.appendChild(style);
 </script>
-
 </body>
 </html>
